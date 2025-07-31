@@ -59,7 +59,7 @@ class CommandArgument:
 
     def __str__(self):
         if not self.valid:
-            return None
+            return ""
         if isinstance(self.value, str) and (" " in self.value):
             return f"'{self.value}'"
         elif isinstance(self.value, enum.Enum):
@@ -81,11 +81,6 @@ class CommandFlag:
         return f"-{self.name}"
 
 
-class CommandOptional(CommandArgument):
-    def __init__(self, value: t.Optional[t.Any]):
-        super().__init__(value)
-
-
 class CommandOption:
     def __init__(self, name: str, value: t.Optional[t.Any]):
         self.name = name
@@ -97,7 +92,7 @@ class CommandOption:
 
     def __str__(self):
         if not self.valid:
-            return None
+            return ""
         if isinstance(self.value, str) and (" " in self.value):
             return f"'-{self.name}={self.value}'"
         elif isinstance(self.value, enum.Enum):
@@ -108,13 +103,13 @@ class CommandOption:
 
 class BaseCommand:
     def __init__(self):
-        self.name = type(self).__name__
-        self.args = []
+        self._name = type(self).__name__
+        self._args = []
 
     def __str__(self):
-        result = self.name
-        result += " " if len(self.args) > 0 else ""
-        result += " ".join(self.args)
+        result = self._name
+        result += " " if len(self._args) > 0 else ""
+        result += " ".join(self._args)
         return result
 
     @property
@@ -124,16 +119,14 @@ class BaseCommand:
 
     def append(
         self,
-        _input: t.Union[CommandArgument, CommandFlag, CommandOptional, CommandOption],
+        _input: t.Union[CommandArgument, CommandFlag, CommandOption],
     ):
         if isinstance(_input, CommandArgument) and _input.valid:
-            self.args.append(str(_input))
+            self._args.append(str(_input))
         elif isinstance(_input, CommandFlag) and _input.valid:
-            self.args.append(str(_input))
-        elif isinstance(_input, CommandOptional) and _input.valid:
-            self.args.append(_input.value)
+            self._args.append(str(_input))
         elif isinstance(_input, CommandOption) and _input.valid:
-            self.args.append(str(_input))
+            self._args.append(str(_input))
 
 
 class SequenceFilter:
@@ -301,8 +294,9 @@ class boxselect(BaseCommand):
         rect: t.Optional[Rect] = None,
     ):
         super().__init__()
-        self.append(CommandFlag("clear", clear))
-        if rect is not None:
+        if clear:
+            self.append(CommandFlag("clear", clear))
+        elif rect is not None:
             self.append(CommandArgument(str(rect)))
 
 
@@ -1177,8 +1171,8 @@ class fixbanding(BaseCommand):
 
     def __init__(
         self,
-        amount: int,
-        sigma: int,
+        amount: float,
+        sigma: float,
         vertical: bool = False,
     ):
         super().__init__()
@@ -1204,6 +1198,9 @@ class fmedian(BaseCommand):
         modulation: float,
     ):
         super().__init__()
+        # Error if ksize is even
+        if ksize % 2 == 0:
+            raise ValueError("ksize must be odd")
         self.append(CommandArgument(ksize))
         self.append(CommandArgument(modulation))
 
@@ -1263,11 +1260,14 @@ class get(BaseCommand):
         self,
         list_all: bool = False,
         detailed: bool = False,
-        variable: t.Optional[str] = None,
+        variable: t.Optional[str | SirilSetting] = None,
     ):
         super().__init__()
         if variable is not None:
-            self.append(CommandArgument(variable))
+            if isinstance(variable, SirilSetting):
+                self.append(CommandArgument(variable.value))
+            else:
+                self.append(CommandArgument(variable))
         elif list_all and not detailed:
             self.append(CommandFlag("a", list_all))
         elif list_all and detailed:
@@ -1553,9 +1553,9 @@ class invmtf(BaseCommand):
         channels: t.Optional[str] = None,
     ):
         super().__init__()
-        self.append(CommandOption("low", low))
-        self.append(CommandOption("mid", mid))
-        self.append(CommandOption("high", high))
+        self.append(CommandArgument(low))
+        self.append(CommandArgument(mid))
+        self.append(CommandArgument(high))
         if channels is not None:
             self.append(CommandArgument(channels))
 
@@ -2741,7 +2741,8 @@ class savejpg(BaseCommand):
     def __init__(self, filename: str, quality: t.Optional[int] = None):
         super().__init__()
         self.append(CommandArgument(filename))
-        self.append(CommandOptional(quality))
+        if quality is not None:
+            self.append(CommandArgument(quality))
 
 
 class savejxl(BaseCommand):
@@ -3043,7 +3044,8 @@ class seqcosme(BaseCommand):
     def __init__(self, sequencename: str, filename: t.Optional[str] = None, prefix: t.Optional[str] = None):
         super().__init__()
         self.append(CommandArgument(sequencename))
-        self.append(CommandOptional(filename))
+        if filename is not None:
+            self.append(CommandArgument(filename))
         self.append(CommandOption("prefix", prefix))
 
 
@@ -3063,7 +3065,8 @@ class seqcosme_cfa(BaseCommand):
     def __init__(self, sequencename: str, filename: t.Optional[str] = None, prefix: t.Optional[str] = None):
         super().__init__()
         self.append(CommandArgument(sequencename))
-        self.append(CommandOptional(filename))
+        if filename is not None:
+            self.append(CommandArgument(filename))
         self.append(CommandOption("prefix", prefix))
 
 
@@ -3301,7 +3304,7 @@ class seqheader(BaseCommand):
         self.append(CommandArgument(sequence))
         for keyword in keywords:
             self.append(CommandArgument(keyword))
-        self.append(CommandOption("sel", selected))
+        self.append(CommandFlag("sel", selected))
         self.append(CommandOption("out", out))
 
 
@@ -3961,6 +3964,7 @@ class sequpdate_key(BaseCommand):
 
     def __init__(
         self,
+        sequence: str,
         key: str,
         new_key: t.Optional[str] = None,
         value: t.Optional[str] = None,
@@ -3970,6 +3974,7 @@ class sequpdate_key(BaseCommand):
         comment: bool = False,
     ):
         super().__init__()
+        self.append(CommandArgument(sequence))
         if value is not None:
             self.append(CommandArgument(key))
             self.append(CommandArgument(value))
@@ -4026,7 +4031,7 @@ class set(BaseCommand):
         self,
         import_file: t.Optional[str] = None,
         key: t.Optional[str | SirilSetting] = None,
-        value: t.Optional[str | bool] = None,
+        value: t.Optional[str | bool | int | float] = None,
     ):
         super().__init__()
         if import_file is not None:
