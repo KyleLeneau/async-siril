@@ -47,14 +47,14 @@ class TestCommandArgument:
         assert arg.value == "value with spaces"
         assert arg.valid is True
         assert str(arg) == "'value with spaces'"
-    
+
     def test_command_argument_with_path(self):
         arg = CommandArgument(pathlib.Path("/Users/A/"))
 
         assert arg.value == pathlib.Path("/Users/A")
         assert arg.valid is True
         assert str(arg) == "'/Users/A'"
-    
+
     def test_command_argument_with_path_containing_spaces(self):
         arg = CommandArgument(pathlib.Path("/Users/A/Target A/"))
 
@@ -103,7 +103,7 @@ class TestCommandArgument:
         assert arg.value == ""
         assert arg.valid is True  # Empty string is still a valid value
         assert str(arg) == ""
-    
+
     def test_command_argument_with_empty_path(self):
         arg = CommandArgument(pathlib.Path(""))
 

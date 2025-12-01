@@ -2762,7 +2762,11 @@ class savejxl(BaseCommand):
     """
 
     def __init__(
-        self, filename: str | pathlib.Path, effort: t.Optional[int] = None, quality: t.Optional[float] = None, bit_8: bool = False
+        self,
+        filename: str | pathlib.Path,
+        effort: t.Optional[int] = None,
+        quality: t.Optional[float] = None,
+        bit_8: bool = False,
     ):
         super().__init__()
         self.append(CommandArgument(filename))

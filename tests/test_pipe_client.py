@@ -288,7 +288,7 @@ class TestPipeClient:
 
                 result = await client.read_line()
 
-                assert result == "test message"
+                assert result == "test message\n"
                 mock_executor.assert_called_once_with(None, mock_file.readline)
 
     @pytest.mark.asyncio
@@ -304,7 +304,7 @@ class TestPipeClient:
 
                 result = await client.read_line()
 
-                assert result == "test message"
+                assert result == "test message\n"
                 mock_executor.assert_called_once_with(None, mock_file.readline)
 
     @pytest.mark.asyncio
@@ -320,7 +320,7 @@ class TestPipeClient:
 
                 result = await client.read_line()
 
-                assert result == "test message"
+                assert result == "test message\n"
 
     @pytest.mark.asyncio
     @patch("sys.platform", "win32")
@@ -337,7 +337,7 @@ class TestPipeClient:
 
                 result = await client.read_line()
 
-                assert result == "test message"
+                assert result == "test message\n"
 
     @pytest.mark.asyncio
     @patch("sys.platform", "darwin")
