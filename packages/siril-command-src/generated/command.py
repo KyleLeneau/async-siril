@@ -1131,9 +1131,9 @@ class platesolve(BaseCommand):
     .. code-block:: text
 
         platesolve [-force] [image_center_coords] [-focal=] [-pixelsize=]
-        platesolve sequencename ... [-noflip] [-downscale] [-order=] [-radius=] [-disto=]
-        platesolve sequencename ... [-limitmag=[+-]] [-catalog=] [-nocrop]
-        platesolve sequencename ... [-localasnet [-blindpos] [-blindres]]
+        platesolve ... [-noflip] [-downscale] [-order=] [-radius=] [-disto=]
+        platesolve ... [-limitmag=[+-]] [-catalog=] [-nocrop]
+        platesolve ... [-localasnet [-blindpos] [-blindres]]
 
     Plate solve the loaded image.
     If the image has already been plate solved nothing will be done, unless the **-force** argument is passed to force a new solve. If WCS or other image metadata is erroneous or missing, arguments must be passed:
