@@ -156,7 +156,7 @@ class AsyncSirilEventConsumer:
                         self.fifo_closed.set_result(None)
                     break
 
-                yield SirilEvent(line)
+                yield SirilEvent(line.rstrip())
         except asyncio.CancelledError:
             logger.debug("Consumer event iteration cancelled")
             raise
@@ -330,8 +330,8 @@ class PipeClient:
 
         line = await self._loop.run_in_executor(None, self._file.readline)
         if isinstance(line, bytes):
-            return line.decode(self.encoding).rstrip()
-        return line.rstrip()
+            return line.decode(self.encoding)
+        return line
 
     @property
     def _is_windows(self):
