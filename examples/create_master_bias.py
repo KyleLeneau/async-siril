@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import attrs as a
 import structlog.stdlib
 import asyncio
 import cappa
 import pathlib
 import tempfile
 import typing as t
+from dataclasses import dataclass
 
 from async_siril import SirilCli
 from async_siril.command import setext, set32bits, cd, convert, stack
@@ -15,7 +15,7 @@ from async_siril.command import fits_extension
 log = structlog.stdlib.get_logger()
 
 
-@a.define(kw_only=True, frozen=True)
+@dataclass
 class CreateMasterBias:
     raw_folder: t.Annotated[pathlib.Path, cappa.Arg(help="Path to the raw folder of Bias frames")]
     ext: t.Annotated[

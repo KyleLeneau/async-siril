@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import attrs as a
 import structlog.stdlib
 import asyncio
 import cappa
+from dataclasses import dataclass
 
 from async_siril import SirilCli
 from async_siril.command import get
@@ -13,7 +13,7 @@ from rich.prompt import Confirm
 log = structlog.stdlib.get_logger()
 
 
-@a.define(kw_only=True, frozen=True)
+@dataclass
 class TestSiril:
     async def __call__(self) -> None:
         log.info("Testing Siril Interface")

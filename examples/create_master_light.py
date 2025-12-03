@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import attrs as a
 import structlog.stdlib
 import asyncio
 import cappa
 import pathlib
 import tempfile
 import typing as t
+from dataclasses import dataclass
 
 from async_siril import SirilCli, BestRejection
 from async_siril.command import (
@@ -27,7 +27,7 @@ from async_siril.command import fits_extension, stack_norm
 log = structlog.stdlib.get_logger()
 
 
-@a.define(kw_only=True, frozen=True)
+@dataclass
 class CreateMasterLight:
     pp_folder: t.Annotated[pathlib.Path, cappa.Arg(help="Path to the raw folder of calibrated Light frames")]
     output: t.Annotated[pathlib.Path, cappa.Arg(help="Path to the output folder")]

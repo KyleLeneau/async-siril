@@ -21,7 +21,6 @@ license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
     "asyncio>=3.4.3",
-    "attrs>=25.3.0",
     "psutil>=7.0.0",
     "structlog>=25.4.0",
 ]
@@ -48,7 +47,7 @@ dev = [
     "pytest-cov>=6.0.0",
     "ruff>=0.12.2",
     "streamlit>=1.46.1",
-    "ty>=0.0.1a14",
+    "ty>=0.0.1a30",
 ]
 
 [tool.uv.workspace]

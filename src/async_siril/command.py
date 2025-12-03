@@ -44,6 +44,7 @@ from .command_types import (
     manual_psf_method,
     sequence_filter_type,
     SirilSetting,
+    saturation_hue_range,
 )
 
 
@@ -2691,7 +2692,7 @@ class satu(BaseCommand):
         self,
         amount: float,
         background_factor: t.Optional[float] = None,
-        hue_range_index: t.Optional[int] = None,
+        hue_range_index: t.Optional[saturation_hue_range] = None,
     ):
         super().__init__()
         self.append(CommandArgument(amount))

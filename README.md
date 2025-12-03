@@ -16,7 +16,7 @@ Async Siril is an asyncio based python wrapper around [Siril 1.4.0](https://www.
 * logging with [structlog](https://www.structlog.org/)
 * example CLI commands built for calibration, registration & stacking workflows [examples](./examples)
 * some helpers for common logic (see `async_siril.helpers`)
-* minimal dependencies (`asyncio`, `structlog`, `psutil`, `attrs`)
+* minimal dependencies (`asyncio`, `structlog`, `psutil`)
 * Linux, Mac, & Windows support
 * Docker support (see [Dockerfile.siril](./Dockerfile.siril))
 * 93% test coverage 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import attrs as a
 import structlog.stdlib
 import asyncio
 import cappa
@@ -57,7 +56,7 @@ class CommandInfo:
         )
 
 
-@a.define(kw_only=True, frozen=True)
+@dataclass
 class ExportSirilCommands:
     clean: t.Annotated[
         bool,
@@ -101,7 +100,7 @@ class ExportSirilCommands:
         scriptable_commands = [cmd for cmd in commands if cmd.scriptable]
         log.info(f"Filtered to {len(scriptable_commands)} scriptable commands")
 
-        log.info(scriptable_commands[0])
+        log.info("example command found", command=scriptable_commands[0])
 
         # Generate and write command classes for scriptable commands
         command_classes = []

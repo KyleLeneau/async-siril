@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import attrs as a
 import structlog.stdlib
 import asyncio
 import cappa
 import pathlib
 import tempfile
 import typing as t
+from dataclasses import dataclass
 
 from async_siril import SirilCli
 from async_siril.command import setext, set32bits, cd, convert, stack, calibrate
@@ -15,7 +15,7 @@ from async_siril.command import fits_extension
 log = structlog.stdlib.get_logger()
 
 
-@a.define(kw_only=True, frozen=True)
+@dataclass
 class CreateMasterDark:
     raw_folder: t.Annotated[pathlib.Path, cappa.Arg(help="Path to the raw folder of Dark frames")]
     ext: t.Annotated[
@@ -51,7 +51,7 @@ class CreateMasterDark:
                 await siril.command(cd(f"{temp.name}"))
 
                 out = f"../../{self.name}_stacked"
-                if self.dslr:
+                if self.dslr and self.bias is not None:
                     # This is really geared towards the DSLR users
                     # produces: calibrated-master-dark
                     # Dark Optimization: used to identify the thermal noise in non-temp controlled cameras (dslr)

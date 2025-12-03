@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import attrs as a
 import structlog.stdlib
 import asyncio
 import cappa
 import pathlib
 import typing as t
 import re
+from dataclasses import dataclass
 
 log = structlog.stdlib.get_logger()
 
@@ -62,7 +62,7 @@ def replace_docstrings(
     return new_text, new_classes, removed_classes, updated_classes
 
 
-@a.define(kw_only=True, frozen=True)
+@dataclass
 class MergeSirilCommands:
     destination: t.Annotated[
         pathlib.Path,
